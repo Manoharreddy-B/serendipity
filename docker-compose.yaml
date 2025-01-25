@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: serendipitydb
+      POSTGRES_USER: serenbhai
+      POSTGRES_PASSWORD: serenbro
+    ports:
+      - "15432:5432"
+    volumes:
+      - serendipity_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  serendipity_postgres_data:
