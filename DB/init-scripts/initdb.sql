@@ -1,0 +1,26 @@
+-- PostgreSQL Initialization File for Schema
+
+-- User Table
+CREATE TABLE UserTable (
+    UID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(150) NOT NULL UNIQUE,
+    DOB DATE NOT NULL,
+    PhoneNo VARCHAR(15) NOT NULL UNIQUE
+);
+
+-- Stock Table
+CREATE TABLE StockTable (
+    SID SERIAL PRIMARY KEY,
+    Price DECIMAL(10, 2) NOT NULL
+);
+
+-- Portfolio Table
+CREATE TABLE PortfolioTable (
+    UID INT NOT NULL,
+    SID INT NOT NULL,
+    Qty INT NOT NULL,
+    PRIMARY KEY (UID, SID),
+    FOREIGN KEY (UID) REFERENCES UserTable(UID) ON DELETE CASCADE,
+    FOREIGN KEY (SID) REFERENCES StockTable(SID) ON DELETE CASCADE
+);
