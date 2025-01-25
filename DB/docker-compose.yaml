@@ -12,6 +12,7 @@ services:
       - "15432:5432"
     volumes:
       - serendipity_postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
 
 volumes:
   serendipity_postgres_data:
