@@ -5,7 +5,7 @@ from datetime import date, timedelta
 
 # Database connection parameters
 DB_HOST = "localhost"
-DB_PORT = "5432"
+DB_PORT = "15432"
 DB_NAME = "serendipitydb"
 DB_USER = "serenbhai"
 DB_PASSWORD = "serenbro"
@@ -18,7 +18,14 @@ def generate_random_date():
     random_days = random.randint(0, delta_days)
     return start_date + timedelta(days=random_days)
 
-# Function to create 15 users, 10 stocks, and portfolios
+def generate_phone_number():
+  area_code = ''.join(random.choice('23456789') for _ in range(3)) 
+  exchange_code = ''.join(random.choice('234567890') for _ in range(3)) 
+  line_number = ''.join(random.choice('0123456789') for _ in range(4)) 
+
+  return f'{area_code}-{exchange_code}-{line_number}'
+
+# Function to create 1000 users, 10 stocks, and portfolios
 def create_data():
     # Connect to the PostgreSQL database
     conn = psycopg2.connect(
@@ -37,16 +44,16 @@ def create_data():
         user_count = cursor.fetchone()[0]
         
         if user_count == 0:
-            # Insert 15 users
+            # Insert 1000 users
             users = [
-                ('User' + str(i), f'user{i}@example.com', generate_random_date(), f'{i}234567890{i}')
-                for i in range(1, 16)
+                ('User' + str(i), f'user{i}@example.com', generate_random_date(), generate_phone_number())
+                for i in range(1, 1001)
             ]
             cursor.executemany("""
                 INSERT INTO UserTable (Name, Email, DOB, PhoneNo)
                 VALUES (%s, %s, %s, %s)
             """, users)
-            print("Inserted 15 users into UserTable.")
+            print("Inserted 1000 users into UserTable.")
 
         # Check if stocks exist
         cursor.execute("SELECT COUNT(*) FROM StockTable")
@@ -55,7 +62,7 @@ def create_data():
         if stock_count == 0:
             # Insert 10 stocks
             stocks = [
-                ('Stock' + str(i), random.uniform(100, 500))
+                ('Stock' + str(i), float(100+(i*50)))
                 for i in range(1, 11)
             ]
             cursor.executemany("""
@@ -76,16 +83,20 @@ def create_data():
             cursor.execute("SELECT SID FROM StockTable")
             stocks = [sid[0] for sid in cursor.fetchall()]
 
-            # Insert portfolios (Each user gets a random stock)
-            portfolios = [
-                (random.choice(users), random.choice(stocks), random.randint(1, 100))
-                for _ in range(1, 16)  # 15 portfolios
-            ]
+            portfolios = []
+            for user in users:
+                num_stocks = random.randint(1, len(stocks))
+                assigned_stocks = random.sample(stocks, num_stocks)
+
+                for stock in assigned_stocks:
+                    qty = random.randint(1, 100)
+                    portfolios.append((user, stock, qty))
+                    
             cursor.executemany("""
-                INSERT INTO PortfolioTable (UID, SID, Qty)
+                INSERT INTO portfoliotable (UID, SID, Qty)
                 VALUES (%s, %s, %s)
             """, portfolios)
-            print("Inserted portfolios into PortfolioTable.")
+            print("Inserted portfolios into portfoliotable.")
 
         # Commit changes
         conn.commit()
