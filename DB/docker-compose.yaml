@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:latest
@@ -9,10 +7,16 @@ services:
       POSTGRES_USER: serenbhai
       POSTGRES_PASSWORD: serenbro
     ports:
-      - "15432:5432"
+      - "5432:5432"
     volumes:
       - serendipity_postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
 
 volumes:
   serendipity_postgres_data:
+
+networks:
+  app_network:
+    external: true
