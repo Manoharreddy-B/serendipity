@@ -1,7 +1,7 @@
 import asyncpg
 import os
 
-DATABASE_URL = "postgres://serenbhai:serenbro@db:5432/serendipitydb"
+DATABASE_URL = "postgresql://serenbhai:serenbro@localhost:5432/serendipitydb"
 
 async def connect_to_db():
     try:
