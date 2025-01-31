@@ -1,6 +1,8 @@
 from kafka import KafkaConsumer
 import json
 import time
+from generate_pdf import generate_pdf
+
 
 def consume_messages():
     
@@ -14,8 +16,11 @@ def consume_messages():
 
     try:
         for message in consumer:
-            message_data = message.value.decode('utf-8')
+            print(type(message.value.decode('utf-8')))
+            message_data = json.loads(message.value.decode('utf-8'))
+            print("hello!")
             print(f"Received Message:{message_data}")
+            generate_pdf(message_data)
             time.sleep(1)
     except KeyboardInterrupt:
         pass
