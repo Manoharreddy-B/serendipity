@@ -1,0 +1,58 @@
+// Transactional Report
+#set page(
+  paper: "a4",
+  margin: 1.5cm,
+  footer: [Page #context counter(page).display()]
+)
+
+// User details variables
+#let user-name = "Charlie Brown"
+#let user-email = "charlie.brown@example.com"
+
+// Stock data as array of arrays
+#let stocks = (
+  ("JKL", 10, "BUY", 1502.00),
+  ("DEF", 50, "SELL", 12537.50)
+)
+
+// Document start
+#align(center)[
+  #text(size: 20pt, weight: "bold")[Transactional Report]
+]
+#text(size: 12pt)[Generated on: #context datetime.today().display()]
+
+#v(2em)
+
+// User Information
+#text(size: 14pt, weight: "bold")[Client Details]
+#v(1em)
+#table(
+  columns: 1,
+  stroke: none,
+  [*Name:* #user-name],
+  [*Email:* #user-email],
+)
+
+#v(2em)
+
+// Portfolio Holdings
+#text(size: 14pt, weight: "bold")[Transactions]
+#v(1em)
+
+#table(
+  columns: 4,
+  align: (center),
+  table.header(
+    [*Stock Ticker*], [*Quantity*], [*Type*], [*Price*],
+  ),
+  ..stocks.map(cell =>
+    ([#cell.at(0)], [#cell.at(1)], [#cell.at(2)], [#cell.at(3)])
+  ).flatten()
+)
+
+#v(2em)
+
+// Disclaimer
+#text(size: 10pt, style: "italic")[
+  *Disclaimer:* This report is generated for informational purposes only and does not constitute financial advice.
+]
