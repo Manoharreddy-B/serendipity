@@ -3,7 +3,7 @@ from main import add_stock_to_portfolio, get_portfolio
 
 def run_example():
     uid = 1
-    sid = 101
+    sid = 3
     quantity = 10
 
     try:

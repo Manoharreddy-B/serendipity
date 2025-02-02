@@ -1,5 +1,5 @@
-from session_utils import DBSessionManager
-from models import UserTable, StockTable, PortfolioTable
+from .models import UserTable, StockTable, PortfolioTable, TransactionTable
+from .session_utils import DBSessionManager
 
 
 def add_stock_to_portfolio(uid: int, sid: int, quantity: int):
@@ -41,3 +41,37 @@ def get_portfolio(uid: int):
             .all()
         )
         return user_portfolio
+
+def get_transaction(uid: int):
+    """"""
+    with DBSessionManager() as db:
+        transactions = (
+            db.query(
+            UserTable.uid,
+            UserTable.name,
+            UserTable.email,
+            TransactionTable.sid,
+            TransactionTable.qty,
+            (TransactionTable.qty*StockTable.price).label('value')
+            ).join(
+                StockTable, TransactionTable.sid == StockTable.sid
+            ).join(
+                UserTable, TransactionTable.uid == UserTable.uid
+            ).filter(
+                TransactionTable.uid == uid)
+            .all()
+        )
+        tid = []
+        for uid, name, email, sid, qty, value in transactions:
+            js = {
+                'uid' : uid,
+                'name' : name,
+                'email' : email,
+                'sid' : sid,
+                'qty' : qty,
+                'value' : value
+            }
+            tid.append(js)
+        return tid
+
+

@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Numeric
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Numeric, DateTime
 from sqlalchemy.orm import declarative_base
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -24,3 +25,21 @@ class PortfolioTable(Base):
     uid = Column(Integer, ForeignKey("usertable.uid", ondelete="CASCADE"), primary_key=True)
     sid = Column(Integer, ForeignKey("stocktable.sid", ondelete="CASCADE"), primary_key=True)
     qty = Column(Integer, nullable=False)
+
+class TransactionTable(Base):
+    __tablename__ = "transactiontable"
+
+    tid = Column(Integer, primary_key=True, index=True)
+    uid = Column(Integer, ForeignKey("usertable.uid"))
+    sid = Column(Integer, ForeignKey("stocktable.sid"))
+    qty = Column(Integer, nullable=False)
+    timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'tid' : self.tid,
+            'uid' : self.uid,
+            'sid' : self.sid,
+            'qty' : self.qty,
+            'timestamp' : self.timestamp
+        }
