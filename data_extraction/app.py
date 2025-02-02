@@ -46,9 +46,9 @@ producer = KafkaProducer(
 #     producer.flush()
 #     producer.close()
 
-@app.get("/transactions")
-def getAllTransactions():
-    transaction = main.get_transaction(1)
+@app.get("/transactions/{uid}")
+def getAllTransactions(uid: int):
+    transaction = main.get_transaction(uid)
     print('hello!',transaction)
     producer.send("pdf_gen", transaction)
     
