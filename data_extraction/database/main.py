@@ -48,10 +48,12 @@ def get_transaction(uid: int):
         transactions = (
             db.query(
             UserTable.uid,
-            UserTable.name,
+            (UserTable.name).label('uname'),
             UserTable.email,
             TransactionTable.sid,
+            (StockTable.name).label('sname'),
             TransactionTable.qty,
+            TransactionTable.typ,
             (TransactionTable.qty*StockTable.price).label('value')
             ).join(
                 StockTable, TransactionTable.sid == StockTable.sid
@@ -61,17 +63,22 @@ def get_transaction(uid: int):
                 TransactionTable.uid == uid)
             .all()
         )
-        tid = []
-        for uid, name, email, sid, qty, value in transactions:
-            js = {
-                'uid' : uid,
-                'name' : name,
-                'email' : email,
-                'sid' : sid,
-                'qty' : qty,
-                'value' : value
-            }
-            tid.append(js)
-        return tid
+        print(transactions)
+        js = {
+            'uid' : transactions[0].uid,
+            'name' : transactions[0].uname,
+            'email' : transactions[0].email,
+            'stocks' : []
+        }
+        for uid, uname, email, sid, sname, qty, typ, value in transactions:
+            transaction = (
+                sname,
+                qty,
+                typ,
+                value,
+            )
+            print(type(transaction))
+            js['stocks'].append(transaction)
+        return js
 
 

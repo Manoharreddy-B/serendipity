@@ -16,7 +16,6 @@ def consume_messages():
 
     try:
         for message in consumer:
-            print(type(message.value.decode('utf-8')))
             message_data = json.loads(message.value.decode('utf-8'))
             print("hello!")
             print(f"Received Message:{message_data}")

@@ -17,6 +17,7 @@ class StockTable(Base):
     __tablename__ = "stocktable"
 
     sid = Column(Integer, primary_key=True, index=True)
+    name = Column(String(5), nullable=False)
     price = Column(Numeric(10, 2), nullable=False)
 
 class PortfolioTable(Base):
@@ -32,6 +33,7 @@ class TransactionTable(Base):
     tid = Column(Integer, primary_key=True, index=True)
     uid = Column(Integer, ForeignKey("usertable.uid"))
     sid = Column(Integer, ForeignKey("stocktable.sid"))
+    typ = Column(String(5), nullable=False) 
     qty = Column(Integer, nullable=False)
     timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
 

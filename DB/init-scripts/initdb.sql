@@ -12,6 +12,7 @@ CREATE TABLE UserTable (
 -- Stock Table
 CREATE TABLE StockTable (
     SID SERIAL PRIMARY KEY,
+    Name VARCHAR(5) NOT NULL,
     Price DECIMAL(10, 2) NOT NULL
 );
 
@@ -30,6 +31,7 @@ CREATE TABLE TransactionTable (
     TID SERIAL PRIMARY KEY,
     UID INT NOT NULL,
     SID INT NOT NULL,
+    Typ VARCHAR(5) NOT NULL,
     Qty INT NOT NULL,
     Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -47,12 +49,12 @@ INSERT INTO UserTable (Name, Email, DOB, PhoneNo) VALUES
 ('Ian Purple', 'ian.purple@example.com', '1989-11-12', '555-2589'),
 ('Jack Yellow', 'jack.yellow@example.com', '1994-04-01', '555-3695');
 
-INSERT INTO StockTable (Price) VALUES
-(100.50),
-(250.75),
-(300.30),
-(150.20),
-(500.10);
+INSERT INTO StockTable (Name, Price) VALUES
+('ABC', 100.50),
+('DEF', 250.75),
+('GHI', 300.30),
+('JKL', 150.20),
+('MNO', 500.10);
 
 INSERT INTO PortfolioTable (UID, SID, Qty) VALUES
 (1, 1, 50),
@@ -69,26 +71,26 @@ INSERT INTO PortfolioTable (UID, SID, Qty) VALUES
 (9, 3, 30),
 (10, 5, 25);
 
-INSERT INTO TransactionTable (UID, SID, Qty) VALUES
-(1, 1, 10),
-(1, 2, 20),
-(2, 3, 15),
-(2, 1, 5),
-(3, 4, 10),
-(3, 2, 50),
-(4, 5, 5),
-(4, 3, 10),
-(5, 4, 30),
-(5, 1, 20),
-(6, 2, 40),
-(6, 5, 10),
-(7, 1, 10),
-(7, 4, 15),
-(8, 3, 10),
-(8, 2, 5),
-(9, 1, 30),
-(9, 5, 20),
-(10, 2, 10),
-(10, 3, 5);
+INSERT INTO TransactionTable (UID, SID, Typ, Qty) VALUES
+(1, 1, 'BUY', 10),
+(1, 2, 'BUY', 20),
+(2, 3, 'SELL', 15),
+(2, 1, 'SELL', 5),
+(3, 4, 'BUY', 10),
+(3, 2, 'SELL', 50),
+(4, 5, 'SELL', 5),
+(4, 3, 'BUY', 10),
+(5, 4, 'SELL', 30),
+(5, 1, 'BUY', 20),
+(6, 2, 'SELL', 40),
+(6, 5, 'BUY', 10),
+(7, 1, 'SELL', 10),
+(7, 4, 'BUY', 15),
+(8, 3, 'SELL', 10),
+(8, 2, 'BUY', 5),
+(9, 1, 'SELL', 30),
+(9, 5, 'SELL', 20),
+(10, 2, 'BUY', 10),
+(10, 3, 'SELL', 5);
 
 

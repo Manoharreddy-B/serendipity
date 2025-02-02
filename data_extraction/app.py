@@ -48,12 +48,9 @@ producer = KafkaProducer(
 
 @app.get("/transactions")
 def getAllTransactions():
-    transactions = main.get_transaction(1)
-    print(transactions)
-    print(type(transactions))
-    for transaction in transactions:
-        print(type(transaction))
-        producer.send("pdf_gen", transaction)
+    transaction = main.get_transaction(1)
+    print('hello!',transaction)
+    producer.send("pdf_gen", transaction)
     
 
 
