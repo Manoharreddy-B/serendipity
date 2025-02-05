@@ -1,9 +1,12 @@
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # 1. Load the database URL from environment (or default to a known string)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://serenbhai:serenbro@localhost:5432/serendipitydb")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # 2. Create the SQLAlchemy engine
 engine = create_engine(DATABASE_URL, echo=True)  # echo=True will log SQL queries
