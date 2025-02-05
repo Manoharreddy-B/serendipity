@@ -1,5 +1,7 @@
 from .models import UserTable, StockTable, PortfolioTable, TransactionTable
 from .session_utils import DBSessionManager
+from .utils import convert_transaction_to_list
+from typing import List
 
 
 def add_stock_to_portfolio(uid: int, sid: int, quantity: int):
@@ -42,43 +44,34 @@ def get_portfolio(uid: int):
         )
         return user_portfolio
 
-def get_transaction(uid: int):
+def get_transaction(uid: List[int]):
     """"""
     with DBSessionManager() as db:
         transactions = (
             db.query(
             UserTable.uid,
-            (UserTable.name).label('uname'),
+            UserTable.name.label('uname'),
             UserTable.email,
             TransactionTable.sid,
-            (StockTable.name).label('sname'),
+            StockTable.name.label('sname'),
             TransactionTable.qty,
             TransactionTable.typ,
-            (TransactionTable.qty*StockTable.price).label('value')
+            TransactionTable.qty*StockTable.price.label('value')
             ).join(
                 StockTable, TransactionTable.sid == StockTable.sid
             ).join(
                 UserTable, TransactionTable.uid == UserTable.uid
             ).filter(
-                TransactionTable.uid == uid)
+                TransactionTable.uid.in_(uid)
+            ).order_by(
+                UserTable.uid
+            )
             .all()
         )
-        print(transactions)
-        js = {
-            'uid' : transactions[0].uid,
-            'name' : transactions[0].uname,
-            'email' : transactions[0].email,
-            'stocks' : []
-        }
-        for uid, uname, email, sid, sname, qty, typ, value in transactions:
-            transaction = (
-                sname,
-                qty,
-                typ,
-                value,
-            )
-            print(type(transaction))
-            js['stocks'].append(transaction)
-        return js
+        for transaction in transactions:
+            print(transaction)
+        result = convert_transaction_to_list(transactions)
+        print(type(result))
+        return result
 
 
