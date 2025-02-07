@@ -81,4 +81,15 @@ def get_transaction(uid: int):
             js['stocks'].append(transaction)
         return js
 
+def get_user(uid: int):
+    with DBSessionManager() as db:
+        user = db.query(UserTable).filter(UserTable.uid == uid).first()
+        print(user)
+        js = {
+            'uid' : user.uid,
+            'name' : user.name,
+            'email' : user.email
+        }
+        return js
+
 

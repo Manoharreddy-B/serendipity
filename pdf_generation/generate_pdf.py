@@ -1,4 +1,7 @@
 import subprocess
+import os
+import random
+from datetime import datetime
 
 def generate_pdf(user_data):
     with open("report.ttyp", "r") as f:
@@ -23,14 +26,21 @@ def generate_pdf(user_data):
     with open("generated_report.ttyp", "w") as f:
         f.write(template)
 
+    # Create reports directory if it doesn't exist
+    os.makedirs("reports", exist_ok=True)
+
+    # Generate the filename
+    date_str = datetime.now().strftime("%d%m%y")
+    random_number = random.randint(1, 10000)
+    filename = f"reports/{date_str}_{user_data["name"]}_{random_number}.pdf"
     try:
         subprocess.run(
-            ["typst", "compile", "generated_report.ttyp", "report.pdf"],
+            ["typst", "compile", "generated_report.ttyp", filename],
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        print("PDF successfully generated: report.pdf")
+        print(f"PDF successfully generated: {filename}")
     except subprocess.CalledProcessError as e:
         print(f"PDF generation failed: {e.stderr.decode()}")
     except FileNotFoundError:

@@ -2,3 +2,4 @@
 ./data_extraction/__pychache__
 .venv/
 __pycache__/
+data_extraction/database/__pycache__
