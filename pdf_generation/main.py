@@ -2,6 +2,7 @@ from kafka import KafkaConsumer, KafkaProducer
 import json
 import time
 from generate_pdf import generate_pdf
+from decimal import Decimal
 
 def custom_serializer(obj):
     if isinstance(obj, Decimal):
@@ -34,11 +35,11 @@ def consume_messages():
                 consumer.commit()
             except Exception as e:
                 print(f"Error while generating the pdf for user{message_data['name']}")
-                print("Error message:"e)
+                print("Error message:", e)
 
                 producer.send("dlq", message)
             except KeyboardInterrupt:
-        pass
+                pass
     finally:
         consumer.close()
 
