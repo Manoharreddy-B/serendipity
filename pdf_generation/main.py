@@ -28,16 +28,16 @@ def consume_messages():
             try:
                 message_data = json.loads(message.value.decode('utf-8'))
                 print(f"Received Message:{message_data}")
-                generate_pdf(message_data)
+                #generate_pdf(message_data)
 
                 ## commiting kafka message after pdf genertion
                 consumer.commit()
             except Exception as e:
                 print(f"Error while generating the pdf for user{message_data['name']}")
-                print("Error message:"e)
+                print("Error message:",e)
 
                 producer.send("dlq", message)
-            except KeyboardInterrupt:
+            # except KeyboardInterrupt:
         pass
     finally:
         consumer.close()
