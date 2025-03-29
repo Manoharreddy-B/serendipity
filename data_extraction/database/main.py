@@ -71,7 +71,7 @@ def get_transaction(uid: List[int]):
         for transaction in transactions:
             print(transaction)
         result = convert_transaction_to_list(transactions)
-        print(type(result))
+        print(result)
         return result
 
 
