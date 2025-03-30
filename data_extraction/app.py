@@ -1,18 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from kafka import KafkaProducer
 from database import main
 from decimal import Decimal
 from dotenv import load_dotenv
 from typing import List
 import jsonpickle
-import os
 import time
 import json
+from config import settings
+from database.security import require_jwt 
 
-load_dotenv()
 
-kafka_host = os.getenv("KAFKA_HOST")
-kafka_topic = os.getenv("KAFKA_TOPIC")
 app = FastAPI()
 
 def custom_serializer(obj):
@@ -25,15 +23,20 @@ def json_serializer(data):
     return json.dumps(data, default=str).encode('utf-8')
 
 producer = KafkaProducer(
-    bootstrap_servers=kafka_host,
+    bootstrap_servers=[settings.kafka_host],
     value_serializer=json_serializer)
 
 
+
 @app.post("/transactions/")
-def getAllTransactions(uid: List[int]):
+def get_all_transactions(uid: List[int], _=Depends(require_jwt)):
+    """
+    Endpoint to get all transactions for a list of user IDs.
+    Now protected by JWT if AUTH_ENABLED=true.
+    """
     transactions = main.get_transaction(uid)
     for transaction in transactions:
-        producer.send(kafka_topic, transaction)
-    
+        producer.send(settings.kafka_topic, transaction)
+    return {"status": "OK", "message": "Transactions published"}
 
 
